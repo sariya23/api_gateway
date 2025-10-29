@@ -27,19 +27,6 @@ services:
       - "2379:2379/tcp"
     networks:
       - intranet
-  apisix-dashboard:
-    image: apache/apisix-dashboard
-    depends_on:
-      - apisix
-    ports:
-      - "9000:9000"
-    volumes:
-      - ./docker/apisix_dashboard_conf/config.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
-    environment:
-      - DEFAULT_APISIX_ADMIN_KEY=supersecret
-      - APISIX_LISTEN_ADDRESS=http://apisix:9091
-    networks:
-      - intranet
 networks:
   intranet:
     external: true
