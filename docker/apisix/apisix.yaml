@@ -1,0 +1,9 @@
+routes:
+  - uri: /v1/auth/*
+    methods: [ "GET", "POST" ]
+    upstream:
+      type: roundrobin
+      nodes:
+        "auth_app:8090": 1
+    name: auth_service
+#END
