@@ -1,3 +1,10 @@
+consumers:
+  - username: "default_user"
+    plugins:
+      jwt-auth:
+        key: "default_user"
+        secret: "HARDSECRET"
+
 routes:
   - uri: /v1/auth/*
     methods: [ "GET", "POST" ]
@@ -6,4 +13,12 @@ routes:
       nodes:
         "auth_app:8090": 1
     name: auth_service
+  - uri: /v1/games/*
+    methods: ["GET", "POST", "PUT", "PATCH"]
+    plugins:
+      jwt-auth: { }
+    upstream:
+      type: roundrobin
+      nodes:
+        "game_app:46900": 1
 #END

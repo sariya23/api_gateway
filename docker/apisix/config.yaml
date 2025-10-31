@@ -17,3 +17,8 @@ deployment:
       - "http://etcd:2379"
     prefix: "/apisix"
     timeout: 30
+
+plugins:
+  - jwt-auth
+  - proxy-rewrite
+  - prometheus
