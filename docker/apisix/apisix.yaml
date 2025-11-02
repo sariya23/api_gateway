@@ -4,6 +4,13 @@ consumers:
       jwt-auth:
         key: "default_user"
         secret: "HARDSECRET"
+        claim_headers: ["key"]
+  - username: "admin"
+    plugins:
+      jwt-auth:
+        key: "admin"
+        secret: "HARDSECRET"
+        claim_headers: ["key"]
 
 routes:
   - uri: /v1/auth/*
@@ -13,10 +20,43 @@ routes:
       nodes:
         "auth_app:8090": 1
     name: auth_service
-  - uri: /v1/games/*
-    methods: ["GET", "POST", "PUT", "PATCH"]
+
+
+  - name: get_game_by_id
+    uri: /v1/games/*
+    methods: ["GET"]
+    vars:
+      - ["uri", "~*", "^/v1/games/[0-9]+$"]
+    upstream:
+      type: roundrobin
+      nodes:
+        "game_app:46900": 1
+
+  - name: delete_game_by_id
+    uri: /v1/games/*
+    methods: ["DELETE"]
+    vars:
+      - ["uri", "~*", "^/v1/games/[0-9]+$"]
     plugins:
-      jwt-auth: { }
+      jwt-auth:
+        key: "admin"
+    upstream:
+      type: roundrobin
+      nodes:
+        "game_app:46900": 1
+
+  - uri: /v1/games/list
+    methods: [ "POST" ]
+    upstream:
+      type: roundrobin
+      nodes:
+        "game_app:46900": 1
+
+  - uri: /v1/games
+    methods: [ "POST" ]
+    plugins:
+      jwt-auth:
+        key: ["default_user", "admin"]
     upstream:
       type: roundrobin
       nodes:
